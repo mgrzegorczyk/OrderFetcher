@@ -8,11 +8,13 @@ public class OrderFileProcessor : IOrderFileProcessor
 {
     private readonly IEmailParser _emailParser;
     private readonly IOrderRepository _orderRepository;
+    private readonly IOrderGPTMapper _orderGptMapper;
 
-    public OrderFileProcessor(IEmailParser emailParser, IOrderRepository orderRepository)
+    public OrderFileProcessor(IEmailParser emailParser, IOrderRepository orderRepository, IOrderGPTMapper orderGPTMapper)
     {
         _emailParser = emailParser;
         _orderRepository = orderRepository;
+        _orderGptMapper = orderGPTMapper;
     }
 
     public async Task ProcessOrderFilesAsync(
@@ -59,7 +61,12 @@ public class OrderFileProcessor : IOrderFileProcessor
         try
         {
             var parsedEmail = await _emailParser.ParseEmailFromFileAsync(filePath);
-            var order = MapEmailToOrder(parsedEmail);
+            var order = await _orderGptMapper.MapEmailBodyToOrderAsync(parsedEmail.Body, cancellationToken);
+
+            if (order == null)
+            {
+                throw new InvalidOperationException("Failed to map email body to Order.");
+            }
 
             await _orderRepository.AddAsync(order);
 
@@ -72,36 +79,6 @@ public class OrderFileProcessor : IOrderFileProcessor
             Console.WriteLine($"Error while processing file {filePath}: {ex.Message}");
             MoveFileToDirectory(filePath, errorDirectory);
         }
-    }
-
-    private Order MapEmailToOrder(ParsedEmail parsedEmail)
-    {
-        // TODO map parsed email to order by chatgpt
-        return new Order
-        {
-            OrderNumber = new Random().Next(1000, 9999),
-            OrderDate = DateTime.Now,
-            Amount = 100,
-            TotalAmount = 120,
-            Currency = "USD",
-            ShippingMethod = "Standard",
-            PaymentMethod = "CreditCard",
-            Items = new List<OrderItem>
-            {
-                new OrderItem
-                {
-                    ProductName = "Sample Product From File",
-                    Quantity = 1,
-                    Price = 100
-                }
-            },
-            BillingAddress = new Address
-            {
-                Street = "Sample Street",
-                City = "Sample City",
-                PostalCode = "12345",
-            }
-        };
     }
 
     private void MoveFileToDirectory(string filePath, string directoryName)

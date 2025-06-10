@@ -14,7 +14,7 @@ namespace OrderFetcher.Infrastructure.Repositories
                 new Order
                 {
                     Id = 1,
-                    OrderNumber = 1001,
+                    OrderNumber = "1001",
                     OrderDate = new DateTime(2025, 6, 10),
                     Amount = 50.0m,
                     TotalAmount = 60.0m,
@@ -41,7 +41,7 @@ namespace OrderFetcher.Infrastructure.Repositories
                 new Order
                 {
                     Id = 2,
-                    OrderNumber = 1002,
+                    OrderNumber = "1002",
                     OrderDate = new DateTime(2025, 6, 11),
                     Amount = 100.0m,
                     TotalAmount = 120.0m,

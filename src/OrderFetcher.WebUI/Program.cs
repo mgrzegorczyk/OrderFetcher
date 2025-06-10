@@ -10,10 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddSingleton<IOrderRepository, MockOrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderFileProcessor, OrderFileProcessor>();
 builder.Services.AddScoped<IEmailParser, EmailParser>();
+builder.Services.AddScoped<IOrderGPTMapper, OrderGPTMapper>();
+
+
 
 var app = builder.Build();
 

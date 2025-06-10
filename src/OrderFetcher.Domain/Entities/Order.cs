@@ -3,8 +3,9 @@
 public class Order
 {
     public int Id { get; set; }
-    public int OrderNumber { get; set; }
+    public string OrderNumber { get; set; }
     public DateTime OrderDate { get; set; }
+    public DateTime CreatedAt { get; set; }
     public decimal Amount { get; set; }
     public decimal TotalAmount { get; set; }
     public string Currency { get; set; }
