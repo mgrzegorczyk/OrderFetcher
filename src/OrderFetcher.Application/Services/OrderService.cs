@@ -1,18 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using OrderFetcher.Application.Interfaces;
 using OrderFetcher.Domain.Entities;
-using OrderFetcher.Infrastructure.Repositories;
 
 namespace OrderFetcher.Application.Services
 {
-    public interface IOrderService
-    {
-        Task<List<Order>> GetOrdersAsync();
-        Task<Order> GetOrderByIdAsync(int orderId);
-        Task<Order> AddOrderAsync(Order order);
-        Task DeleteOrderAsync(int orderId);
-    }
-    
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;

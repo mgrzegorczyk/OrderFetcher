@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\OrderFetcher.Application\OrderFetcher.Application.csproj" />
       <ProjectReference Include="..\OrderFetcher.Domain\OrderFetcher.Domain.csproj" />
+      <ProjectReference Include="..\OrderFetcher.Infrastructure\OrderFetcher.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

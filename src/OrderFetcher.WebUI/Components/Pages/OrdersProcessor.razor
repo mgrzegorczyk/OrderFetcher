@@ -1,0 +1,63 @@
+﻿@rendermode InteractiveServer
+@page "/orders-processor"
+@using OrderFetcher.Application.Interfaces
+@inject IOrderFileProcessor OrderFileProcessor
+@inject IJSRuntime JS
+
+<h3>Order File Processor</h3>
+
+<div>
+    @if (isProcessing)
+    {
+        <div class="loading">
+            <span>Processing files, please wait...</span>
+            <button class="btn btn-danger" @onclick="CancelProcessing">Cancel</button>
+        </div>
+    }
+    else
+    {
+        <button @onclick="ProcessFilesAsync" class="btn btn-primary">Process Order Files</button>
+    }
+</div>
+
+@code {
+    private bool isProcessing = false;
+    private CancellationTokenSource? cts;
+
+    private async Task ProcessFilesAsync()
+    {
+        cts = new CancellationTokenSource();
+        try
+        {
+            isProcessing = true;
+
+            var inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "Orders"));
+            var errorDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "errors"));
+            var processedDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "processed"));
+
+            await OrderFileProcessor.ProcessOrderFilesAsync(inputDirectory, errorDirectory, processedDirectory, cts.Token);
+            await ShowAlert("Processing done!");
+        }
+        catch (OperationCanceledException)
+        {
+            await ShowAlert("Processing was cancelled!");
+        }
+        finally
+        {
+            isProcessing = false;
+            cts.Dispose();
+            cts = null;
+        }
+    }
+
+    private void CancelProcessing()
+    {
+        cts?.Cancel();
+    }
+
+    private async Task ShowAlert(string message)
+    {
+        await JS.InvokeVoidAsync("alert", message);
+    }
+
+}

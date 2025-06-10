@@ -1,15 +1,8 @@
-﻿using OrderFetcher.Domain.Entities;
+﻿using OrderFetcher.Application.Interfaces;
+using OrderFetcher.Domain.Entities;
 
 namespace OrderFetcher.Infrastructure.Repositories
 {
-    public interface IOrderRepository
-    {
-        Task<List<Order>> GetAllAsync();
-        Task<Order?> GetByIdAsync(int id);
-        Task<Order> AddAsync(Order order);
-        Task DeleteAsync(int id);
-    }
-
     public class MockOrderRepository : IOrderRepository
     {
         private readonly List<Order> _orders;
