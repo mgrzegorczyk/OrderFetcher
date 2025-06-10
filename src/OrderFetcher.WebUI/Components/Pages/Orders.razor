@@ -1,0 +1,59 @@
+﻿@page "/orders"
+@using OrderFetcher.Domain.Entities
+@inject Application.Services.IOrderService OrderService
+@inject NavigationManager Navigation
+
+<h3>Orders</h3>
+
+@if (orders == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Order Number</th>
+            <th>Order Date</th>
+            <th>Total Amount</th>
+            <th>Currency</th>
+            <th>Shipping Method</th>
+            <th>Payment Method</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in orders)
+        {
+            <tr>
+                <td>@order.OrderNumber</td>
+                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@order.TotalAmount</td>
+                <td>@order.Currency</td>
+                <td>@order.ShippingMethod</td>
+                <td>@order.PaymentMethod</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="() => ShowOrderDetails(order.Id)">Details</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    // TODO: OrderDto
+    private List<Order>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrderService.GetOrdersAsync();
+    }
+
+    private void ShowOrderDetails(int orderId)
+    {
+        // TODO: OrderDetails
+        // Navigation.NavigateTo($"/order-details/{orderId}");
+    }
+}

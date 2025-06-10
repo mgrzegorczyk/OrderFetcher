@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderFetcher.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderFetcher.Infrastructure", "OrderFetcher.Infrastructure\OrderFetcher.Infrastructure.csproj", "{295F8375-B512-4E8E-8653-76F2A416CB99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderFetcher.WebUI", "OrderFetcher.WebUI\OrderFetcher.WebUI.csproj", "{001DC80C-F20A-4709-8BA0-97FD0FF3D5DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{295F8375-B512-4E8E-8653-76F2A416CB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{295F8375-B512-4E8E-8653-76F2A416CB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{295F8375-B512-4E8E-8653-76F2A416CB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{001DC80C-F20A-4709-8BA0-97FD0FF3D5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{001DC80C-F20A-4709-8BA0-97FD0FF3D5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{001DC80C-F20A-4709-8BA0-97FD0FF3D5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{001DC80C-F20A-4709-8BA0-97FD0FF3D5DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
