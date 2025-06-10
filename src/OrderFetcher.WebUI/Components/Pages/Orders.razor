@@ -10,6 +10,10 @@
 {
     <p>Loading...</p>
 }
+else if (!orders.Any())
+{
+    <p>No orders found.</p>
+}
 else
 {
     <table class="table">
@@ -17,6 +21,7 @@ else
         <tr>
             <th>Order Number</th>
             <th>Order Date</th>
+            <th>Amount</th>
             <th>Total Amount</th>
             <th>Currency</th>
             <th>Shipping Method</th>
@@ -29,7 +34,8 @@ else
         {
             <tr>
                 <td>@order.OrderNumber</td>
-                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@(order.OrderDate.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                <td>@order.Amount</td>
                 <td>@order.TotalAmount</td>
                 <td>@order.Currency</td>
                 <td>@order.ShippingMethod</td>
@@ -44,17 +50,22 @@ else
 }
 
 @code {
-    // TODO: OrderDto
     private List<Order>? orders;
 
     protected override async Task OnInitializedAsync()
     {
-        orders = await OrderService.GetOrdersAsync();
+        try
+        {
+            orders = await OrderService.GetOrdersAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching orders: {ex.Message}");
+        }
     }
 
     private void ShowOrderDetails(int orderId)
     {
-        // TODO: OrderDetails
-        // Navigation.NavigateTo($"/order-details/{orderId}");
+        Navigation.NavigateTo($"/order-details/{orderId}");
     }
 }
