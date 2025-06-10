@@ -10,4 +10,8 @@
       <Folder Include="SampleOrders\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrderFetcher.Domain\OrderFetcher.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
