@@ -1,4 +1,5 @@
 ﻿using OrderFetcher.Application.Interfaces;
+using OrderFetcher.Application.Models;
 using OrderFetcher.Domain.Entities;
 
 namespace OrderFetcher.Application.Services
@@ -13,9 +14,16 @@ namespace OrderFetcher.Application.Services
         }
 
         // TODO: OrderDto
-        public async Task<List<Order>> GetOrdersAsync()
+        public async Task<PagedResult<Order>> GetOrdersAsync(int page, int pageSize)
         {
-            return await _orderRepository.GetAllAsync();
+            var orders = await _orderRepository.GetAllAsync(page, pageSize);
+            var totalCount = await _orderRepository.CountAsync(); // liczba wszystkich zamówień w bazie
+
+            return new PagedResult<Order>
+            {
+                Items = orders,
+                TotalCount = totalCount
+            };
         }
 
         // TODO: OrderDto
