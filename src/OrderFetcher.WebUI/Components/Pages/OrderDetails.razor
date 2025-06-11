@@ -87,6 +87,29 @@ else
             </div>
         </div>
     }
+    
+    <h4>Shipping Address</h4>
+    @if (order.ShippingAddress == null)
+    {
+        <p>No shipping address provided.</p>
+    }
+    else
+    {
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <p><strong>Name:</strong> @order.ShippingAddress.FullName</p>
+                <p><strong>Street:</strong> @order.ShippingAddress.Street</p>
+                <p><strong>Building Number:</strong> @order.ShippingAddress.BuildingNumber</p>
+                <p><strong>Postal Code:</strong> @order.ShippingAddress.PostalCode</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>City:</strong> @order.ShippingAddress.City</p>
+                <p><strong>Phone:</strong> @order.ShippingAddress.PhoneNumber</p>
+                <p><strong>Email:</strong> @order.ShippingAddress.Email</p>
+            </div>
+        </div>
+    }
+
 }
 
 @code {
