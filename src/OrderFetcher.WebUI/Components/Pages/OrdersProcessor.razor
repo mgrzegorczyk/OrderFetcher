@@ -31,9 +31,11 @@
         {
             isProcessing = true;
 
-            var inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "Orders"));
-            var errorDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "errors"));
-            var processedDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "OrderFetcher.Infrastructure", "processed"));
+            var baseDir = AppContext.BaseDirectory;
+
+            var inputDirectory = Path.Combine(baseDir, "Orders");
+            var errorDirectory = Path.Combine(baseDir, "errors");
+            var processedDirectory = Path.Combine(baseDir, "processed");
 
             await OrderFileProcessor.ProcessOrderFilesAsync(inputDirectory, errorDirectory, processedDirectory, cts.Token);
             await ShowAlert("Processing done!");
