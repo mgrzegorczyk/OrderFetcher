@@ -29,8 +29,19 @@ Extract the order data and return it as JSON with the following structure:
     ""City"": ""string"",
     ""PhoneNumber"": ""string"",
     ""Email"": ""string""
+  }},
+  ""ShippingAddress"": {{
+    ""FullName"": ""string"",
+    ""Street"": ""string"",
+    ""BuildingNumber"": ""string"",
+    ""PostalCode"": ""string"",
+    ""City"": ""string"",
+    ""PhoneNumber"": ""string"",
+    ""Email"": ""string""
   }}
 }}
+
+If the shipping address is not present in the email, set \""ShippingAddress\"" to null.
 
 HTML email body:
 {0}
