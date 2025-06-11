@@ -1,0 +1,24 @@
+﻿services:
+  app:
+    build:
+      context: ./src
+      dockerfile: OrderFetcher.WebUI/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./DataProtectionKeys:/keys
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1435:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+
+volumes:
+  sql-data:
