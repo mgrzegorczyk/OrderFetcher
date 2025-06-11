@@ -1,4 +1,5 @@
-﻿using OrderFetcher.Application.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OrderFetcher.Application.Interfaces;
 using OrderFetcher.Domain.Entities;
 using OrderFetcher.Domain.Models;
 
@@ -7,14 +8,15 @@ namespace OrderFetcher.Infrastructure.Services;
 public class OrderFileProcessor : IOrderFileProcessor
 {
     private readonly IEmailParser _emailParser;
-    private readonly IOrderRepository _orderRepository;
     private readonly IOrderGPTMapper _orderGptMapper;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public OrderFileProcessor(IEmailParser emailParser, IOrderRepository orderRepository, IOrderGPTMapper orderGPTMapper)
+    public OrderFileProcessor(IEmailParser emailParser, IOrderRepository orderRepository,
+        IOrderGPTMapper orderGPTMapper, IServiceScopeFactory scopeFactory)
     {
         _emailParser = emailParser;
-        _orderRepository = orderRepository;
         _orderGptMapper = orderGPTMapper;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task ProcessOrderFilesAsync(
@@ -30,23 +32,33 @@ public class OrderFileProcessor : IOrderFileProcessor
             throw new DirectoryNotFoundException($"Input directory does not exist: {inputDirectory}");
         }
 
-        if (!Directory.Exists(errorDirectory))
-        {
-            Directory.CreateDirectory(errorDirectory);
-        }
-
-        if (!Directory.Exists(processedDirectory))
-        {
-            Directory.CreateDirectory(processedDirectory);
-        }
+        Directory.CreateDirectory(errorDirectory);
+        Directory.CreateDirectory(processedDirectory);
 
         var emlFiles = Directory.GetFiles(inputDirectory, "*.eml");
+        var semaphore = new SemaphoreSlim(5); // Limit do 5 równoczesnych operacji
+        var tasks = new List<Task>();
 
-        var tasks = emlFiles.Select(filePath =>
-                ProcessFileAsync(filePath, errorDirectory, processedDirectory, cancellationToken))
-            .ToList();
+        foreach (var filePath in emlFiles)
+        {
+            await semaphore.WaitAsync(cancellationToken);
 
-        cancellationToken.ThrowIfCancellationRequested();
+            tasks.Add(Task.Run(async () =>
+            {
+                try
+                {
+                    await ProcessFileAsync(filePath, errorDirectory, processedDirectory, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to process file: {filePath}, error: {ex.Message}");
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }, cancellationToken));
+        }
 
         await Task.WhenAll(tasks);
     }
@@ -58,6 +70,7 @@ public class OrderFileProcessor : IOrderFileProcessor
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        Console.WriteLine($"[Start] Processing file: {filePath} - {DateTime.Now:HH:mm:ss.fff}");
         try
         {
             var parsedEmail = await _emailParser.ParseEmailFromFileAsync(filePath);
@@ -68,9 +81,12 @@ public class OrderFileProcessor : IOrderFileProcessor
                 throw new InvalidOperationException("Failed to map email body to Order.");
             }
 
-            await _orderRepository.AddAsync(order);
+            using var scope = _scopeFactory.CreateScope();
+            var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
 
-            Console.WriteLine($"Processed file: {filePath}");
+            await orderRepository.AddAsync(order);
+
+            Console.WriteLine($"[Success] Processed file: {filePath} - {DateTime.Now:HH:mm:ss.fff}");
 
             MoveFileToDirectory(filePath, processedDirectory);
         }
