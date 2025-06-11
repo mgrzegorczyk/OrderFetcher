@@ -21,7 +21,8 @@ public static class OrderResponseExtensions
             PaymentMethod = orderResponse.PaymentMethod,
             Items = orderResponse.Items?.Select(i => i.ToOrderItem()).ToList(),
             BillingAddress = orderResponse.BillingAddress?.ToAddress(),
-            ShippingAddress = orderResponse.ShippingAddress?.ToAddress()
+            ShippingAddress = orderResponse.ShippingAddress?.ToAddress(),
+            CreatedAt = DateTime.UtcNow
         };
     }
 }
