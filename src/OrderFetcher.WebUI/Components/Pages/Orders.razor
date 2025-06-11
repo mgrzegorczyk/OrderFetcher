@@ -1,7 +1,7 @@
 ﻿@page "/orders"
 @rendermode InteractiveServer
+@using OrderFetcher.Application.Dtos
 @using OrderFetcher.Application.Interfaces
-@using OrderFetcher.Domain.Entities
 @inject IOrderService OrderService
 @inject NavigationManager Navigation
 
@@ -73,7 +73,7 @@ else
 }
 
 @code {
-    private List<Order> orders = new();
+    private List<OrderDto> orders = new();
     private int currentPage = 1;
     private int pageSize = 5;
     private int totalPages = 1;

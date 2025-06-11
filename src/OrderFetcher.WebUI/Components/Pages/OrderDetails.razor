@@ -1,7 +1,7 @@
 ﻿@page "/order-details/{OrderId:int}"
 @rendermode InteractiveServer
+@using OrderFetcher.Application.Dtos
 @using OrderFetcher.Application.Interfaces
-@using OrderFetcher.Domain.Entities
 @inject IOrderService OrderService
 @inject NavigationManager Navigation
 
@@ -116,7 +116,7 @@ else
     [Parameter]
     public int OrderId { get; set; }
 
-    private Order? order;
+    private OrderDto? order;
 
     protected override async Task OnInitializedAsync()
     {

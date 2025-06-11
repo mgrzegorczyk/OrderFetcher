@@ -1,4 +1,6 @@
-﻿using OrderFetcher.Application.Interfaces;
+﻿using OrderFetcher.Application.Dtos;
+using OrderFetcher.Application.Extensions;
+using OrderFetcher.Application.Interfaces;
 using OrderFetcher.Application.Models;
 using OrderFetcher.Domain.Entities;
 
@@ -12,29 +14,27 @@ namespace OrderFetcher.Application.Services
         {
             _orderRepository = orderRepository;
         }
-
-        // TODO: OrderDto
-        public async Task<PagedResult<Order>> GetOrdersAsync(int page, int pageSize)
+        
+        public async Task<PagedResult<OrderDto>> GetOrdersAsync(int page, int pageSize)
         {
             var orders = await _orderRepository.GetAllAsync(page, pageSize);
-            var totalCount = await _orderRepository.CountAsync(); // liczba wszystkich zamówień w bazie
+            var totalCount = await _orderRepository.CountAsync();
 
-            return new PagedResult<Order>
+            return new PagedResult<OrderDto>
             {
-                Items = orders,
+                Items = orders.Select(order => order.ToDto()).ToList(),
                 TotalCount = totalCount
             };
         }
-
-        // TODO: OrderDto
-        public async Task<Order> GetOrderByIdAsync(int orderId)
+        
+        public async Task<OrderDto> GetOrderByIdAsync(int orderId)
         {
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order == null)
             {
                 throw new KeyNotFoundException($"Order with ID {orderId} was not found.");
             }
-            return order;
+            return order.ToDto();
         }
 
         public async Task<Order> AddOrderAsync(Order order)
